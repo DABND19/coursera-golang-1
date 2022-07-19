@@ -14,21 +14,16 @@ func printNode(output io.Writer, info os.FileInfo, printFiles bool, isLast bool,
 	if isLast {
 		jumper = "└"
 	}
-
 	branch := jumper + strings.Repeat("─", 3)
-
+	fmt.Fprintf(output, "%s%s%s", prefix, branch, info.Name())
 	if !info.IsDir() {
 		formattedSize := fmt.Sprintf("%db", info.Size())
 		if info.Size() == 0 {
 			formattedSize = "empty"
 		}
-
-		toPrint := fmt.Sprintf("%s%s%s (%s)\n", prefix, branch, info.Name(), formattedSize)
-		output.Write([]byte(toPrint))
-	} else {
-		toPrint := fmt.Sprintf("%s%s%s\n", prefix, branch, info.Name())
-		output.Write([]byte(toPrint))
+		fmt.Fprintf(output, " (%s)", formattedSize)
 	}
+	fmt.Fprintln(output)
 }
 
 func getChildren(file os.File, skipFiles bool) ([]os.FileInfo, error) {
